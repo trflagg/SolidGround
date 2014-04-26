@@ -15,10 +15,12 @@ define(['constants'
     };
 
     GameState.prototype.create = function() {
-        this.stage.backgroundColor = "#33CCFF";
-        this.create_dirt();
 
         this.rigs = this.add.group();
+        this.dirt = [];
+
+        this.stage.backgroundColor = "#33CCFF";
+        this.create_dirt();
 
         this.input.moveCallback = this.mouse_moved;
         this.input.onDown.add(this.onDown, this);
@@ -28,9 +30,26 @@ define(['constants'
     };
 
     GameState.prototype.create_dirt = function() {
-        for (i=0,ll=10; i<ll; i++) {
-            for (j=0, ll2=3; j<ll2; j++) {
-                this.add.existing(new DirtTile(this, i*constants.tile_size, (j+2)*constants.tile_size));
+        for (i=0,ll=constants.dirt_size_x; i<ll; i++) {
+            this.dirt[i] = [];
+
+            for (j=0, ll2=constants.dirt_size_y; j<ll2; j++) {
+                var dirt_tile = new DirtTile(this, i*constants.tile_size, (j+constants.dirt_start)*constants.tile_size, i, j);
+                this.add.existing(dirt_tile);
+                this.dirt[i][j] = dirt_tile;
+            }
+        }
+    };
+
+    GameState.prototype.analyzeDirt = function() {
+        for (i=0,ll=constants.dirt_size_x; i<ll; i++) {
+            for (j=0, ll2=constants.dirt_size_y; j<ll2; j++) {
+                var left = i > 0 ? this.dirt[i-1][j] : null
+                   , right = i < constants.dirt_size_x ? this.dirt[i+1][j] : null
+                   , top = j > 0 ? this.dirt[i][j-1] : null
+                   , bottom = j < constants.dirt_size_y ? this.dirt[i][j+1] : null;
+
+                this.dirt[i][j].analyze({left: left, right: right, top: top, bottom: bottom});
             }
         }
     };
@@ -48,12 +67,13 @@ define(['constants'
             }
 
             // only place on the top row
-            if (y > (1 * tile_size) && y <= (2 * tile_size)) {
+            if (y > (1 * tile_size) && y <= (constants.dirt_start * tile_size)) {
                 // lock x 
                 x = Math.floor(x/tile_size);
                 
                 this.placing_rig.x = x * tile_size + (0.5 * tile_size);
-                this.placing_rig.y = (2 * tile_size) - (0.5 * tile_size);
+                this.placing_rig.y = (constants.dirt_start * tile_size) - (0.5 * tile_size);
+                this.placing_rig.i = x;
             }
             else {
                 this.placing_rig.x = constants.exile_x;
@@ -75,12 +95,12 @@ define(['constants'
             }
 
             // only place on the top row
-            if (y > (1 * tile_size) && y <= (2 * tile_size)) {
+            if (y > (1 * tile_size) && y <= (constants.dirt_start * tile_size)) {
                 // lock x 
                 x = Math.floor(x/tile_size);
                 
                 this.placing_rig.x = x * tile_size + (0.5 * tile_size);
-                this.placing_rig.y = (2 * tile_size) - (0.5 * tile_size);
+                this.placing_rig.y = (constants.dirt_start * tile_size) - (0.5 * tile_size);
 
                 this.fsm.placeRig();
             }

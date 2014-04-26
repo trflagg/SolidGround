@@ -5,7 +5,7 @@ define(['constants'
     
     var gameFSM = function(game) {
         this.game = game;
-    }
+    };
 
     gameFSM.prototype.onplacing_rig = function(event, from, to) {
         var placing_rig = new Rig(this.game, constants.exile_x, constants.exile_y);
@@ -15,8 +15,9 @@ define(['constants'
 
     gameFSM.prototype.onleaveplacing_rig = function(event, from, to) {
         this.game.rigs.add(this.game.placing_rig);
+        this.game.dirt[this.game.placing_rig.i][0].diggable = true;
         this.game.placing_rig = null;
-    }
+    };
 
     // attach FSM
     StateMachine.create({
@@ -24,7 +25,7 @@ define(['constants'
 
         , events: [
             { name: 'startup',      from: 'none',           to: 'placing_rig'}
-          , { name: 'placeRig',     from: 'placing_rig',    to: 'wait'}        
+          , { name: 'placeRig',     from: 'placing_rig',    to: 'digging'}        
         ]
     });
 
