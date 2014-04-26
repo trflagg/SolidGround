@@ -7,22 +7,24 @@ define(['constants'
         this.game = game;
     }
 
-    gameFSM.prototype.onplaceRig = function(event, from, to) {
-        var placingRig = new Rig(this.game, constants.exile_x, constants.exile_y);
-        this.game.add.existing(placingRig);
-        this.game._placingRig = placingRig;
+    gameFSM.prototype.onplacing_rig = function(event, from, to) {
+        var placing_rig = new Rig(this.game, constants.exile_x, constants.exile_y);
+        this.game.add.existing(placing_rig);
+        this.game.placing_rig = placing_rig;
     };
+
+    gameFSM.prototype.onleaveplacing_rig = function(event, from, to) {
+        this.game.rigs.add(this.game.placing_rig);
+        this.game.placing_rig = null;
+    }
 
     // attach FSM
     StateMachine.create({
         target: gameFSM.prototype
 
         , events: [
-            { name: 'startup',      from: 'none',                   to: 'placeRig'}
-            , { name: 'placeRig',     from: ['startup', 'selectDig'
-                                           , 'wait'],               to: 'selectDig'}
-            , { name: 'selectDig',    from: ['placeRig','wait'],    to: 'wait'}
-            , { name: 'wait',         from: 'selectDig',            to: 'selectDig'}
+            { name: 'startup',      from: 'none',           to: 'placing_rig'}
+          , { name: 'placeRig',     from: 'placing_rig',    to: 'wait'}        
         ]
     });
 

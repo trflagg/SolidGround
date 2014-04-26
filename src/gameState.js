@@ -18,7 +18,10 @@ define(['constants'
         this.stage.backgroundColor = "#33CCFF";
         this.create_dirt();
 
+        this.rigs = this.add.group();
+
         this.input.moveCallback = this.mouse_moved;
+        this.input.onDown.add(this.onDown, this);
 
         this.fsm = new GameFSM(this);
         this.fsm.startup();
@@ -34,25 +37,55 @@ define(['constants'
 
     GameState.prototype.update = function() {
         // placeRig
-        if (this.fsm.is('placeRig')) {
+        if (this.fsm.is('placing_rig')) {
             var x = this.input.x
                 , y = this.input.y
                 , tile_size = constants.tile_size;
+
+            if (!this.placing_rig) {
+                console.error('ERROR!!! NO PLACING RIG!');
+                return;
+            }
 
             // only place on the top row
             if (y > (1 * tile_size) && y <= (2 * tile_size)) {
                 // lock x 
                 x = Math.floor(x/tile_size);
-                this._placingRig.x = x * tile_size + (0.5 * tile_size);
-                this._placingRig.y = (2 * tile_size) - (0.5 * tile_size);
+                
+                this.placing_rig.x = x * tile_size + (0.5 * tile_size);
+                this.placing_rig.y = (2 * tile_size) - (0.5 * tile_size);
             }
             else {
-                this._placingRig.x = constants.exile_x;
-                this._placingRig.y = constants.exile_y;
+                this.placing_rig.x = constants.exile_x;
+                this.placing_rig.y = constants.exile_y;
             }
 
         }
-    }
+    };
+
+    GameState.prototype.onDown = function() {
+        var x = this.input.x
+            , y = this.input.y
+            , tile_size = constants.tile_size;
+
+        if (this.fsm.is('placing_rig')) {
+            if (!this.placing_rig) {
+                console.error('ERROR!!! NO PLACING RIG!');
+                return;
+            }
+
+            // only place on the top row
+            if (y > (1 * tile_size) && y <= (2 * tile_size)) {
+                // lock x 
+                x = Math.floor(x/tile_size);
+                
+                this.placing_rig.x = x * tile_size + (0.5 * tile_size);
+                this.placing_rig.y = (2 * tile_size) - (0.5 * tile_size);
+
+                this.fsm.placeRig();
+            }
+        }
+    };
 
     return GameState;
 });
