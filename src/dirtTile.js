@@ -1,12 +1,12 @@
 define([], function() {
 
     var DirtTile = function(game, x, y, i, j) {
-        Phaser.Sprite.call(this, game, x, y, 'dirtTile');
+        Phaser.Sprite.call(this, game, x, y, 'dirtTile', 0);
 
         this.inputEnabled = true;
         this.events.onInputDown.add(this.clicked, this);
 
-        this.diggable = false;
+        this.is_diggable = false;
         this.i = i;
         this.j = j;
     };
@@ -15,13 +15,21 @@ define([], function() {
     DirtTile.prototype.constructor = DirtTile;
 
     DirtTile.prototype.clicked = function() {
-        if (this.game.fsm.is('digging') && this.diggable) {
+        if (this.game.fsm.is('digging') && this.is_diggable) {
             this.kill();
         };
     };
 
     DirtTile.prototype.analyze = function(neighbors) {
         
+    };
+
+    DirtTile.prototype.diggable = function() {
+        this.is_diggable = true;
+        this.frame = 1;
+    };
+
+    DirtTile.prototype.update = function() {
     };
 
     return DirtTile;

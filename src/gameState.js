@@ -10,7 +10,7 @@ define(['constants'
     };
 
     GameState.prototype.preload = function() {
-        this.load.image('dirtTile', 'img/dirtTile.png');
+        this.load.spritesheet('dirtTile', 'img/dirtSheet.png', constants.tile_size, constants.tile_size);
         this.load.image('rig', 'img/rig.png');
     };
 
