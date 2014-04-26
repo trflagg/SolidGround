@@ -47,9 +47,9 @@ define(['constants'
         for (i=0,ll=constants.dirt_size_x; i<ll; i++) {
             for (j=0, ll2=constants.dirt_size_y; j<ll2; j++) {
                 var left = i > 0 ? this.dirt[i-1][j] : null
-                   , right = i < constants.dirt_size_x ? this.dirt[i+1][j] : null
+                   , right = i < constants.dirt_size_x - 1 ? this.dirt[i+1][j] : null
                    , top = j > 0 ? this.dirt[i][j-1] : null
-                   , bottom = j < constants.dirt_size_y ? this.dirt[i][j+1] : null;
+                   , bottom = j < constants.dirt_size_y - 1 ? this.dirt[i][j+1] : null;
 
                 this.dirt[i][j].analyze({left: left, right: right, top: top, bottom: bottom});
             }
@@ -83,6 +83,9 @@ define(['constants'
             }
 
         }
+
+        // analyze
+        this.analyzeDirt();
     };
 
     GameState.prototype.onDown = function() {
