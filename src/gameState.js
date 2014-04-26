@@ -10,7 +10,8 @@ define(['constants'
     };
 
     GameState.prototype.preload = function() {
-        this.load.spritesheet('dirtTile', 'img/dirtSheetBlack32.png', constants.tile_size, constants.tile_size);
+        this.load.spritesheet('dirtSheet', 'img/dirtSheetBlack32.png', constants.tile_size, constants.tile_size);
+        this.load.spritesheet('mineralSheet', 'img/mineralSheet32.png', constants.tile_size, constants.tile_size);
         this.load.image('rig', 'img/rig32.png');
     };
 
@@ -37,6 +38,7 @@ define(['constants'
                 var dirt_tile = new DirtTile(this, i*constants.tile_size, (j+constants.dirt_start)*constants.tile_size, i, j);
                 this.add.existing(dirt_tile);
                 this.dirt[i][j] = dirt_tile;
+                dirt_tile.makeMineral();
             }
         }
     };
