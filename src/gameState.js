@@ -10,8 +10,8 @@ define(['constants'
     };
 
     GameState.prototype.preload = function() {
-        this.load.spritesheet('dirtTile', 'img/dirtSheet.png', constants.tile_size, constants.tile_size);
-        this.load.image('rig', 'img/rig.png');
+        this.load.spritesheet('dirtTile', 'img/dirtSheetBlack32.png', constants.tile_size, constants.tile_size);
+        this.load.image('rig', 'img/rig32.png');
     };
 
     GameState.prototype.create = function() {
@@ -19,7 +19,7 @@ define(['constants'
         this.rigs = this.add.group();
         this.dirt = [];
 
-        this.stage.backgroundColor = "#33CCFF";
+        this.stage.backgroundColor = "#000";
         this.create_dirt();
 
         this.input.moveCallback = this.mouse_moved;

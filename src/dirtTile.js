@@ -9,6 +9,19 @@ define([], function() {
         this.is_diggable = false;
         this.i = i;
         this.j = j;
+
+        if (this.game.rnd.frac() < 0.1) {
+            this.frame = 2;
+        }
+        else if (this.game.rnd.frac() < 0.1) {
+            this.frame = 3;
+        }
+        else if (this.game.rnd.frac() < 0.1) {
+            this.frame = 4;
+        }
+        else if (this.game.rnd.frac() < 0.1) {
+            this.frame = 5;
+        }
     };
 
     DirtTile.prototype = Object.create(Phaser.Sprite.prototype);
