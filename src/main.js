@@ -1,9 +1,13 @@
 // contents of main.js:
 require.config({
-
 });
 
-requirejs([], function() {
-console.log('hello world');
-console.dir(Phaser);
+require(['./gameState'], function(GameState) {
+
+    var game = new Phaser.Game(640, 320, Phaser.AUTO, 'game');
+
+    game.state.add('Game', GameState);
+
+    game.state.start('Game');
+
 });
