@@ -4,3 +4,6 @@
 [submodule "lib/javascript-state-machine"]
 	path = lib/javascript-state-machine
 	url = https://github.com/jakesgordon/javascript-state-machine.git
+[submodule "lib/jquery-cookie"]
+	path = lib/jquery-cookie
+	url = https://github.com/carhartl/jquery-cookie.git
