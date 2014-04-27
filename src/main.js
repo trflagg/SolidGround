@@ -1,5 +1,8 @@
 // contents of main.js:
 require.config({
+    paths: {
+        'jquery': '//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1-rc2/jquery.min'
+    }
 });
 
 require(['./constants'

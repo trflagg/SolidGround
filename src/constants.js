@@ -1,15 +1,8 @@
-define(function() {
+define(['jquery'], function($) {
     var constants = {
-        // 33% of screen width, divided by 64 (drop remainder)
-        game_size_x: 20
-        , game_size_y: 20
-        , tile_size: 32
+        tile_size: 32
         , exile_x: -100
         , exile_y: -100
-
-        , dirt_size_x: 20
-        , dirt_size_y: 10
-        , dirt_start: 10
 
         , top_pipe: 1
         , right_pipe: 2
@@ -21,6 +14,15 @@ define(function() {
         , magenta_50_score: 50
         , magenta_25_score: 25
     };
+
+    // 33% of screen width, divided by tile_size (drop remainder)
+    constants['game_size_x'] = Math.floor($(window).width() / constants.tile_size) - 1;
+    constants['game_size_y'] = Math.floor($(window).height() / constants.tile_size);
+
+    constants['dirt_size_x'] = constants['game_size_x'];
+    constants['dirt_size_y'] = 50;
+
+    constants['dirt_start'] = Math.floor(constants['game_size_y'] * (3/6));
 
     return constants;
 })
