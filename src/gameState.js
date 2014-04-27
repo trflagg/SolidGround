@@ -20,6 +20,11 @@ define(['constants'
         this.rigs = this.add.group();
         this.dirt = [];
 
+        this.score = {
+            'lightblue': 0
+            , 'magenta': 0
+        }
+
         this.stage.backgroundColor = "#000";
         this.create_dirt();
 
@@ -39,19 +44,6 @@ define(['constants'
                 this.add.existing(dirt_tile);
                 this.dirt[i][j] = dirt_tile;
                 dirt_tile.makeMineral();
-            }
-        }
-    };
-
-    GameState.prototype.analyzeDirt = function() {
-        for (i=0,ll=constants.dirt_size_x; i<ll; i++) {
-            for (j=0, ll2=constants.dirt_size_y; j<ll2; j++) {
-                var left = i > 0 ? this.dirt[i-1][j] : null
-                   , right = i < constants.dirt_size_x - 1 ? this.dirt[i+1][j] : null
-                   , top = j > 0 ? this.dirt[i][j-1] : null
-                   , bottom = j < constants.dirt_size_y - 1 ? this.dirt[i][j+1] : null;
-
-                this.dirt[i][j].analyze({left: left, right: right, top: top, bottom: bottom});
             }
         }
     };
@@ -84,8 +76,6 @@ define(['constants'
 
         }
 
-        // analyze
-        this.analyzeDirt();
     };
 
     GameState.prototype.onDown = function() {
@@ -110,6 +100,45 @@ define(['constants'
                 this.fsm.placeRig();
             }
         }
+    };
+
+    GameState.prototype.boardChanged = function() {
+        this.resetScores();
+
+        // analyze
+        this.analyzeDirt();
+
+    };
+
+    GameState.prototype.resetScores = function() {
+        for (mineral_score in this.score) {
+            if (this.score.hasOwnProperty(mineral_score)) {
+                this.score[mineral_score] = 0;
+            }
+        }
+    };
+
+    GameState.prototype.analyzeDirt = function() {
+        for (i=0,ll=constants.dirt_size_x; i<ll; i++) {
+            for (j=0, ll2=constants.dirt_size_y; j<ll2; j++) {
+                var left = i > 0 ? this.dirt[i-1][j] : null
+                   , right = i < constants.dirt_size_x - 1 ? this.dirt[i+1][j] : null
+                   , top = j > 0 ? this.dirt[i][j-1] : null
+                   , bottom = j < constants.dirt_size_y - 1 ? this.dirt[i][j+1] : null;
+
+                var result = this.dirt[i][j].analyze({left: left, right: right, top: top, bottom: bottom});
+                if (result) {
+                    for (mineral_score in this.score) {
+                        if (this.score.hasOwnProperty(mineral_score)) {
+                            this.score[mineral_score] += result[mineral_score];
+                        }
+                    }
+                }
+            }
+        }
+
+        console.log('lb:' + this.score['lightblue']);
+        console.log('mb:' + this.score['magenta']);
     };
 
     return GameState;

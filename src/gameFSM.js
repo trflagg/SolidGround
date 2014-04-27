@@ -17,6 +17,7 @@ define(['constants'
         this.game.rigs.add(this.game.placing_rig);
         this.game.dirt[this.game.placing_rig.i][0].rig();
         this.game.placing_rig = null;
+        this.game.boardChanged();
     };
 
     // attach FSM

@@ -8,9 +8,15 @@ define(['constants'], function(constants) {
 
         this.is_diggable = false;
         this.pipe = false;
+        this.pipe_num = 0;
         this.rigged = false;
         this.i = i;
         this.j = j;
+
+        this.score = {
+            'lightblue': 0
+            , 'magenta': 0
+        };
     };
 
     DirtTile.prototype = Object.create(Phaser.Sprite.prototype);
@@ -18,18 +24,22 @@ define(['constants'], function(constants) {
 
     DirtTile.prototype.makeMineral = function() {
         if (this.game.rnd.frac() < 0.1) {
+            this.score['lightblue'] = constants.lightblue_50_score;
             this.mineralSprite = this.game.add.sprite(this.x, this.y, 'mineralSheet', 0);
             this.mineralSprite.bringToTop();
         }
         else if (this.game.rnd.frac() < 0.1) {
+            this.score['lightblue'] = constants.lightblue_25_score;
             this.mineralSprite = this.game.add.sprite(this.x, this.y, 'mineralSheet', 1);
             this.mineralSprite.bringToTop();
         }
         else if (this.game.rnd.frac() < 0.1) {
+            this.score['magenta'] = constants.magenta_50_score;
             this.mineralSprite = this.game.add.sprite(this.x, this.y, 'mineralSheet', 2);
             this.mineralSprite.bringToTop();
         }
         else if (this.game.rnd.frac() < 0.1) {
+            this.score['magenta'] = constants.magenta_25_score;
             this.mineralSprite = this.game.add.sprite(this.x, this.y, 'mineralSheet', 3);
             this.mineralSprite.bringToTop();
         }
@@ -49,48 +59,58 @@ define(['constants'], function(constants) {
             this.frame = 2;
 
             this.pipe = true;
+            this.resetScores();
+
+            this.game.boardChanged();
         }
     };
 
     DirtTile.prototype.analyze = function(neighbors) {
-        var pipe_num = 0;
 
         if (this.pipe) {
+            this.pipe_num = 0;
+            this.resetScores();
+
             if (this.rigged) {
-                pipe_num += constants.top_pipe;
+                this.pipe_num += constants.top_pipe;
             }
 
-            if (neighbors.top) {
-                if (neighbors.top.pipe) {
-                    pipe_num += constants.top_pipe;
-                } else {
-                    neighbors.top.diggable();
-                }
-            }
-            if (neighbors.right) {
-                if (neighbors.right.pipe) {
-                    pipe_num += constants.right_pipe;
-                } else {
-                    neighbors.right.diggable();
-                }
-            }
-            if (neighbors.bottom) {
-                if (neighbors.bottom.pipe) {
-                    pipe_num += constants.bottom_pipe;
-                } else {
-                    neighbors.bottom.diggable();
-                }
-            }
-            if (neighbors.left) {
-                if (neighbors.left.pipe) {
-                    pipe_num += constants.left_pipe;
-                } else {
-                    neighbors.left.diggable();
-                }
-            }
+            this.pipeScoreNeighbor(neighbors.top, constants.top_pipe);
+            this.pipeScoreNeighbor(neighbors.right, constants.right_pipe);
+            this.pipeScoreNeighbor(neighbors.bottom, constants.bottom_pipe);
+            this.pipeScoreNeighbor(neighbors.left, constants.left_pipe);
+
+            this.setPipeFrame(this.pipe_num);
+
+            return this.score;
         }
 
-        this.setPipeFrame(pipe_num);
+        return null;
+
+    };
+
+    DirtTile.prototype.pipeScoreNeighbor = function(neighbor, pipeScore) {
+        if (neighbor) {
+            if (neighbor.pipe) {
+                this.pipe_num += pipeScore;
+            } else {
+                neighbor.diggable();
+                
+                for (mineral_score in this.score) {
+                    if (this.score.hasOwnProperty(mineral_score)) {
+                        this.score[mineral_score] += neighbor.score[mineral_score];
+                    }
+                }
+            }
+        }        
+    };
+
+    DirtTile.prototype.resetScores = function() {
+        for (mineral_score in this.score) {
+            if (this.score.hasOwnProperty(mineral_score)) {
+                this.score[mineral_score] = 0;
+            }
+        }
     };
 
     DirtTile.prototype.setPipeFrame = function(num) {
