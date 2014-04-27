@@ -296,9 +296,9 @@ define(['constants'
     };
 
     GameState.prototype.buy = function(store, name) {
-        this.score[store.currency] -= store.price;
 
         if (name === 'rig') {
+            this.score[store.currency] -= store.price;
             this.fsm.buyARig();
         }
 
@@ -311,6 +311,7 @@ define(['constants'
             }
             if (suitable_rigs.length > 0) {
                 this.refineries++;
+                this.score[store.currency] -= store.price;
                 var upgrade_rig = this.rnd.pick(suitable_rigs);
                 upgrade_rig.upgrade();
             }
