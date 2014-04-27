@@ -7,27 +7,66 @@
         <style>
         body {
             background: #000;
+            color: #FFF;
+            font-family: 'PT Sans';
         }
 
         h1 {
             font-family: 'Special Elite', 'cursive';
             color: #FFF;
             font-size: 72px;
-            margin: 0;
-            padding: 0;
-            position: absolute;
-            top: 30px;
+            margin-bottom: 0px;
+            padding-bottom: 0px;
+        }
+        ul {
+            list-style: none;
+        }
+        img {
+            display: inline;
         }
 
-        canvas {
-            /*border: 3px solid white;*/
+        p {
+            display: inline;
+        }
+        
+        h3 {
+            margin-bottom: 0;
+            padding-top: 15px;
+        }
+
+        a {
+            font-family: 'Special Elite', 'cursive';
+            font-size: 35px;
+            color: #FFF;
+            text-decoration: none;
+            display: block;
+            margin: 10px;
         }
         </style>
     </head>
     <body>
         <h1>SolidGround</h1>
-        <script language="javascript" src="lib/phaser/build/phaser.js"></script>
-        <script language="javascript" src="lib/javascript-state-machine/state-machine.js"></script>
-        <script language="javascript" data-main="src/main.js" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.11/require.min.js"></script>
+        <h2>Objective</h2>
+        <ul>
+            <li>Connect pipes to minerals to increase your <span class="yellow">$/sec</span> and make money</li>
+            <li>Pipes cost more the further down you go</li>
+        </ul>
+        <h3>Rig</h3>
+        <img src="img/rigShot.png"/>
+            <p>Place on surface. Allows you to connect pipes.</p>
+        <h3>Yellow outline</h3>
+            <img src="img/yellow.png"/>
+            <p>Connected to a pipe. Can be dug.</p>
+        <h3>White outline</h3>
+            <img src="img/white.png"/>
+            <p>Connected to a pipe. Cannot be dug until you make more money.</p>
+        <h3>Magenta</h3>
+            <img src="img/magenta.png"/>
+            <p>Makes some money per second when connected to a pipe.</p>
+        <h3>Cyan</h3>
+            <img src="img/cyan.png"/>
+            <p>Makes more money per second when connected to a pipe.</p>
+
+        <a href="game.html">Play!!</a>
     </body>
 </html>
