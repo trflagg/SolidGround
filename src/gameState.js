@@ -36,25 +36,33 @@ define(['constants'
             font: '25px PT Sans'
             , fill: 'FF0'
         });
+        this.money_score.max = "$" + constants.win_score;
         this.add.existing(this.money_score);
 
-        this.money_per_second_score = new ScoreText(this, 0, constants.score_height + constants.score_y, '$/sec', {
-            font: '25px PT Sans'
-            , fill: 'FF0'
-        });
-        this.add.existing(this.money_per_second_score);
-
-        this.lb_score = new ScoreText(this, 0, (constants.score_height*2) + constants.score_y, '', {
+        this.lb_score = new ScoreText(this, 0, (constants.score_height*1) + constants.score_y, '', {
             font: '25px PT Sans'
             , fill: '0FF'
         });
         this.add.existing(this.lb_score);
 
-        this.ma_score = new ScoreText(this, 0, (constants.score_height*3) + constants.score_y, '', {
+        this.ma_score = new ScoreText(this, 0, (constants.score_height*2) + constants.score_y, '', {
             font: '25px PT Sans'
             , fill: 'F0F'
         });
         this.add.existing(this.ma_score);
+
+        this.base_score = new ScoreText(this, 0, (constants.score_height*3) + constants.score_y, '$base', {
+            font: '25px PT Sans'
+            , fill: 'FF0'
+        });
+        this.base_score.score = this.score['$/sec'];
+        this.add.existing(this.base_score);
+
+        this.money_per_second_score = new ScoreText(this, 0, (constants.score_height*4) + constants.score_y, '$/sec', {
+            font: '25px PT Sans'
+            , fill: 'FF0'
+        });
+        this.add.existing(this.money_per_second_score);
 
         this.updateScores();
 
@@ -155,8 +163,8 @@ define(['constants'
     GameState.prototype.updateScores = function() {
         this.money_score.score = this.score['$'];
         this.money_per_second_score.score = Math.floor(this.score['$/sec']);
-        this.lb_score.score = Math.floor(this.score['lb'] * 100);
-        this.ma_score.score = Math.floor(this.score['ma'] * 100);
+        this.lb_score.score = Math.floor(this.score['lb'] * constants.rate_$_per_second_lb);
+        this.ma_score.score = Math.floor(this.score['ma'] * constants.rate_$_per_second_ma);
     };
 
     GameState.prototype.onDown = function() {

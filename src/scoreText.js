@@ -15,7 +15,14 @@ define([], function() {
     };
 
     ScoreText.prototype.update = function() {
-        this.text = this.name + " " + this.score;
+        var text = this.name + " " + this.score;
+        if (this.max) {
+            text += " / " + this.max;
+        }
+        if (this.rate) {
+            text += " * $" + this.rate;
+        }
+        this.text = text;
         this.x = this.game.world.width - this._width;
     };
     return ScoreText;
