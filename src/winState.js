@@ -32,6 +32,14 @@ define(['constants'], function(constants) {
         text.anchor.setTo(0.5, 0.5);
         this.add.existing(text);
 
+        // var time = (this.scores['time'] / 1000).toFixed(2);
+        // var text = new Phaser.Text(this, this.world.centerX, this.world.centerY + (constants.title_height * 4), 'reload to try again.', {
+        //     font: '30px Special Elite'
+        //     , fill: 'FFF'
+        // });
+        // text.anchor.setTo(0.5, 0.5);
+        // this.add.existing(text);
+
     }
 
     return WinState;

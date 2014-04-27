@@ -109,6 +109,11 @@ define(['constants'], function(constants) {
                 this.resetMineralScores();
 
                 this.game.boardChanged();
+                this.game.emitter.x = this.x + (constants.tile_size / 2);
+                this.game.emitter.y = this.y + (constants.tile_size / 2);
+                // this.game.emitter.bringToTop();
+                this.game.emitter.start(true, 1500, null, this.game.rnd.integerInRange(4, 6));
+
             }
         }
     };

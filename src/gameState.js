@@ -18,6 +18,10 @@ define(['constants'
         this.load.spritesheet('mineralSheet', 'img/mineralSheet32.png', constants.tile_size, constants.tile_size);
         this.load.spritesheet('diggableSheet', 'img/diggableSheet.png', constants.tile_size, constants.tile_size);
         this.load.spritesheet('rig', 'img/rig32-2.png', constants.tile_size, constants.tile_size);
+
+        this.load.image('rock1', 'img/rock1.png');
+        this.load.image('rock2', 'img/rock2.png');
+        this.load.image('rock3', 'img/rock3.png');
     };
 
     GameState.prototype.create = function() {
@@ -100,6 +104,11 @@ define(['constants'
 
         this.input.moveCallback = this.mouse_moved;
         this.input.onDown.add(this.onDown, this);
+
+        this.emitter = this.add.emitter(constants.exile_x, constants.exile_y, 100);
+        // this.emitter.bringToTop();
+        this.emitter.particleBringToTop = true;
+        this.emitter.makeParticles(['rock1', 'rock2', 'rock3']);
 
         this.fsm = new GameFSM(this);
         this.fsm.startup();
