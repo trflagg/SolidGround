@@ -13,7 +13,7 @@ define(['constants'], function(constants) {
         this.i = i;
         this.j = j;
 
-        this.score = {
+        this.mineral_score = {
             'lightblue': 0
             , 'magenta': 0
         };
@@ -24,22 +24,22 @@ define(['constants'], function(constants) {
 
     DirtTile.prototype.makeMineral = function() {
         if (this.game.rnd.frac() < 0.1) {
-            this.score['lightblue'] = constants.lightblue_50_score;
+            this.mineral_score['lightblue'] = constants.lightblue_50_score;
             this.mineralSprite = this.game.add.sprite(this.x, this.y, 'mineralSheet', 0);
             this.mineralSprite.bringToTop();
         }
         else if (this.game.rnd.frac() < 0.1) {
-            this.score['lightblue'] = constants.lightblue_25_score;
+            this.mineral_score['lightblue'] = constants.lightblue_25_score;
             this.mineralSprite = this.game.add.sprite(this.x, this.y, 'mineralSheet', 1);
             this.mineralSprite.bringToTop();
         }
         else if (this.game.rnd.frac() < 0.1) {
-            this.score['magenta'] = constants.magenta_50_score;
+            this.mineral_score['magenta'] = constants.magenta_50_score;
             this.mineralSprite = this.game.add.sprite(this.x, this.y, 'mineralSheet', 2);
             this.mineralSprite.bringToTop();
         }
         else if (this.game.rnd.frac() < 0.1) {
-            this.score['magenta'] = constants.magenta_25_score;
+            this.mineral_score['magenta'] = constants.magenta_25_score;
             this.mineralSprite = this.game.add.sprite(this.x, this.y, 'mineralSheet', 3);
             this.mineralSprite.bringToTop();
         }
@@ -52,16 +52,22 @@ define(['constants'], function(constants) {
 
     DirtTile.prototype.clicked = function() {
         if (this.game.fsm.is('digging') && this.is_diggable) {
+            var pipe_cost = constants.cost_pipe_per_level2 * Math.pow(this.j + 1, 2);
+            console.log(pipe_cost);
+            if (this.game.score['$'] > pipe_cost) {
 
-            if (this.mineralSprite) {
-                this.mineralSprite.destroy();
+                this.game.score['$'] -= pipe_cost;
+
+                if (this.mineralSprite) {
+                    this.mineralSprite.destroy();
+                }
+                this.frame = 2;
+
+                this.pipe = true;
+                this.resetMineralScores();
+
+                this.game.boardChanged();
             }
-            this.frame = 2;
-
-            this.pipe = true;
-            this.resetScores();
-
-            this.game.boardChanged();
         }
     };
 
@@ -69,7 +75,7 @@ define(['constants'], function(constants) {
 
         if (this.pipe) {
             this.pipe_num = 0;
-            this.resetScores();
+            this.resetMineralScores();
 
             if (this.rigged) {
                 this.pipe_num += constants.top_pipe;
@@ -82,7 +88,7 @@ define(['constants'], function(constants) {
 
             this.setPipeFrame(this.pipe_num);
 
-            return this.score;
+            return this.mineral_score;
         }
 
         return null;
@@ -96,19 +102,19 @@ define(['constants'], function(constants) {
             } else {
                 neighbor.diggable();
                 
-                for (mineral_score in this.score) {
-                    if (this.score.hasOwnProperty(mineral_score)) {
-                        this.score[mineral_score] += neighbor.score[mineral_score];
+                for (mineral_score in this.mineral_score) {
+                    if (this.mineral_score.hasOwnProperty(mineral_score)) {
+                        this.mineral_score[mineral_score] += neighbor.mineral_score[mineral_score];
                     }
                 }
             }
         }        
     };
 
-    DirtTile.prototype.resetScores = function() {
-        for (mineral_score in this.score) {
-            if (this.score.hasOwnProperty(mineral_score)) {
-                this.score[mineral_score] = 0;
+    DirtTile.prototype.resetMineralScores = function() {
+        for (mineral_score in this.mineral_score) {
+            if (this.mineral_score.hasOwnProperty(mineral_score)) {
+                this.mineral_score[mineral_score] = 0;
             }
         }
     };

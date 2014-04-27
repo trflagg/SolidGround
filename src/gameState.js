@@ -22,16 +22,45 @@ define(['constants'
         this.rigs = this.add.group();
         this.dirt = [];
 
-        this.money_score = new ScoreText(this, constants.money_score_x, constants.score_y, '$', {
+        this.score = {
+            '$': 0
+            , '$/sec': this.rnd.integerInRange(83, 113)
+            , 'lb': 0
+            , 'ma': 0
+        };
+        this.base_rate = this.score['$/sec'];
+        this.last_update = this.game.time.now;
+
+        this.money_score = new ScoreText(this, 0, constants.score_y, '$', {
             font: '25px PT Sans'
             , fill: 'FF0'
         });
         this.add.existing(this.money_score);
 
-        this.score = {
+        this.money_per_second_score = new ScoreText(this, 0, constants.score_height + constants.score_y, '$/sec', {
+            font: '25px PT Sans'
+            , fill: 'FF0'
+        });
+        this.add.existing(this.money_per_second_score);
+
+        this.lb_score = new ScoreText(this, 0, (constants.score_height*2) + constants.score_y, '', {
+            font: '25px PT Sans'
+            , fill: '0FF'
+        });
+        this.add.existing(this.lb_score);
+
+        this.ma_score = new ScoreText(this, 0, (constants.score_height*3) + constants.score_y, '', {
+            font: '25px PT Sans'
+            , fill: 'F0F'
+        });
+        this.add.existing(this.ma_score);
+
+        this.updateScores();
+
+        this.mineral_score = {
             'lightblue': 0
             , 'magenta': 0
-        }
+        };
 
         this.stage.backgroundColor = "#000";
         this.create_dirt();
@@ -84,6 +113,18 @@ define(['constants'
 
         }
 
+        // scores
+        var time_delta = this.game.time.elapsedSince(this.last_update)
+        this.last_update = this.game.time.now;
+        this.score['$'] += Math.floor(this.score['$/sec'] * (time_delta / 1000));
+        this.updateScores();
+    };
+
+    GameState.prototype.updateScores = function() {
+        this.money_score.score = this.score['$'];
+        this.money_per_second_score.score = Math.floor(this.score['$/sec']);
+        this.lb_score.score = Math.floor(this.score['lb'] * 100);
+        this.ma_score.score = Math.floor(this.score['ma'] * 100);
     };
 
     GameState.prototype.onDown = function() {
@@ -111,17 +152,27 @@ define(['constants'
     };
 
     GameState.prototype.boardChanged = function() {
-        this.resetScores();
+        this.resetMineralScores();
 
         // analyze
         this.analyzeDirt();
 
+        // set scores
+        console.log('lb:' + this.mineral_score['lightblue']);
+        console.log('mb:' + this.mineral_score['magenta']);
+        this.score['lb'] = this.mineral_score['lightblue'];
+        this.score['ma'] = this.mineral_score['magenta'];
+
+        this.score['$/sec'] = this.base_rate + 
+                                this.mineral_score['lightblue'] * constants.rate_$_per_second_lb +
+                                this.mineral_score['magenta'] * constants.rate_$_per_second_ma;
+
     };
 
-    GameState.prototype.resetScores = function() {
-        for (mineral_score in this.score) {
-            if (this.score.hasOwnProperty(mineral_score)) {
-                this.score[mineral_score] = 0;
+    GameState.prototype.resetMineralScores = function() {
+        for (mineral_score in this.mineral_score) {
+            if (this.mineral_score.hasOwnProperty(mineral_score)) {
+                this.mineral_score[mineral_score] = 0;
             }
         }
     };
@@ -136,18 +187,15 @@ define(['constants'
 
                 var result = this.dirt[i][j].analyze({left: left, right: right, top: top, bottom: bottom});
                 if (result) {
-                    for (mineral_score in this.score) {
-                        if (this.score.hasOwnProperty(mineral_score)) {
-                            this.score[mineral_score] += result[mineral_score];
+                    for (mineral_score in this.mineral_score) {
+                        if (this.mineral_score.hasOwnProperty(mineral_score)) {
+                            this.mineral_score[mineral_score] += result[mineral_score];
                         }
                     }
                 }
             }
         }
 
-        console.log('lb:' + this.score['lightblue']);
-        this.money_score.score = this.score['lightblue'];
-        console.log('mb:' + this.score['magenta']);
     };
 
     return GameState;

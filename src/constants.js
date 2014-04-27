@@ -9,10 +9,16 @@ define(['jquery'], function($) {
         , bottom_pipe: 4
         , left_pipe: 8
 
-        , lightblue_50_score: 50
-        , lightblue_25_score: 25
-        , magenta_50_score: 50
-        , magenta_25_score: 25
+        , lightblue_50_score: 0.50
+        , lightblue_25_score: 0.25
+        , magenta_50_score: 0.50
+        , magenta_25_score: 0.25
+
+        , cost_rig: 5000
+        , cost_pipe_per_level2: 100
+
+        , rate_$_per_second_lb: 81
+        , rate_$_per_second_ma: 47
     };
 
     // 33% of screen width, divided by tile_size (drop remainder)
@@ -25,6 +31,7 @@ define(['jquery'], function($) {
     constants['dirt_start'] = Math.floor(constants['game_size_y'] * (0.5));
 
     constants['score_y'] = 0;
+    constants['score_height'] = 30;
 
     return constants;
 })
