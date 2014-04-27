@@ -31,6 +31,7 @@ define(['constants'
             , '$/sec': 100
             , 'lb': 0
             , 'ma': 0
+            , 'time': 0
         };
         this.base_rate = this.score['$/sec'];
         this.last_update = this.game.time.now;
@@ -45,33 +46,40 @@ define(['constants'
         var text = "upgrade to a refinery for $"+constants.cost_refinery;
         this.refinery_store.text = text;
 
-        this.money_score = new ScoreText(this, 0, constants.score_y, '$', {
+        this.time_score = new ScoreText(this, 0, (constants.score_height*1) + constants.score_y, 'time', {
+            font: '25px PT Sans'
+            , fill: 'DDD'
+        });
+        this.time_score.suffix = "sec";
+        this.add.existing(this.time_score);
+
+        this.money_score = new ScoreText(this, 0, (constants.score_height*2) + constants.score_y, '$', {
             font: '25px PT Sans'
             , fill: 'FF0'
         });
         this.money_score.max = "$" + constants.win_score;
         this.add.existing(this.money_score);
 
-        this.lb_score = new ScoreText(this, 0, (constants.score_height*1) + constants.score_y, '', {
+        this.lb_score = new ScoreText(this, 0, (constants.score_height*3) + constants.score_y, '', {
             font: '25px PT Sans'
             , fill: '0FF'
         });
         this.add.existing(this.lb_score);
 
-        this.ma_score = new ScoreText(this, 0, (constants.score_height*2) + constants.score_y, '', {
+        this.ma_score = new ScoreText(this, 0, (constants.score_height*4) + constants.score_y, '', {
             font: '25px PT Sans'
             , fill: 'F0F'
         });
         this.add.existing(this.ma_score);
 
-        this.base_score = new ScoreText(this, 0, (constants.score_height*3) + constants.score_y, '$base', {
+        this.base_score = new ScoreText(this, 0, (constants.score_height*5) + constants.score_y, '$base', {
             font: '25px PT Sans'
             , fill: 'FF0'
         });
         this.base_score.score = this.score['$/sec'];
         this.add.existing(this.base_score);
 
-        this.money_per_second_score = new ScoreText(this, 0, (constants.score_height*4) + constants.score_y, '$/sec', {
+        this.money_per_second_score = new ScoreText(this, 0, (constants.score_height*6) + constants.score_y, '$/sec', {
             font: '25px PT Sans'
             , fill: 'FF0'
         });
@@ -170,11 +178,12 @@ define(['constants'
         var time_delta = this.game.time.elapsedSince(this.last_update)
         this.last_update = this.game.time.now;
         this.score['$'] += Math.floor(this.score['$/sec'] * (time_delta / 1000));
+        this.score['time'] += Math.floor((time_delta ));
         this.updateScores();
 
         // check for win
         if (this.score['$'] > constants.win_score) {
-            this.state.start('Win');
+            this.state.start('Win', true, true, this.score);
         }
     };
 
@@ -183,6 +192,7 @@ define(['constants'
         this.money_per_second_score.score = Math.floor(this.score['$/sec']);
         this.lb_score.score = Math.floor(this.score['lb'] * constants.rate_$_per_second_lb);
         this.ma_score.score = Math.floor(this.score['ma'] * constants.rate_$_per_second_ma * (this.refineries + 1));
+        this.time_score.score = (this.score['time'] / 1000).toFixed(2);
     };
 
     GameState.prototype.onDown = function() {

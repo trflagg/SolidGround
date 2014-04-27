@@ -17,6 +17,9 @@ define([], function() {
         if (this.max) {
             text += " / " + this.max;
         }
+        if (this.suffix) {
+            text += this.suffix;
+        }
         if (this.rate) {
             text += " * $" + this.rate;
         }
