@@ -4,7 +4,7 @@ define(['jquery'], function($) {
         , exile_x: -100
         , exile_y: -100
 
-        , win_score: 500000
+        , win_score: 2000
 
         , top_pipe: 1
         , right_pipe: 2
@@ -34,6 +34,8 @@ define(['jquery'], function($) {
 
         , rate_$_per_second_lb: 81
         , rate_$_per_second_ma: 47
+
+        , title_height: 50
     };
 
     // 33% of screen width, divided by tile_size (drop remainder)

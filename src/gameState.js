@@ -171,6 +171,11 @@ define(['constants'
         this.last_update = this.game.time.now;
         this.score['$'] += Math.floor(this.score['$/sec'] * (time_delta / 1000));
         this.updateScores();
+
+        // check for win
+        if (this.score['$'] > constants.win_score) {
+            this.state.start('Win');
+        }
     };
 
     GameState.prototype.updateScores = function() {

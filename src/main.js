@@ -6,15 +6,18 @@ require.config({
 });
 
 require(['./constants'
-         , './gameState']
+         , './gameState'
+         , './winState']
          , function(constants
-                    , GameState) {
+                    , GameState
+                    , WinState) {
 
     var game = new Phaser.Game(constants.game_size_x * constants.tile_size
                                 , constants.game_size_y * constants.tile_size
                                 , Phaser.AUTO, 'game');
 
     game.state.add('Game', GameState);
+    game.state.add('Win', WinState);
 
     game.state.start('Game');
 
