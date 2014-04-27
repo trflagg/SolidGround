@@ -27,7 +27,7 @@ define(['jquery'], function($) {
         , magenta_25_score: 0.25
 
         , cost_rig: 6000
-        , cost_refinery: 100000
+        , cost_refinery: 20000
         , cost_pipe_per_level2: 100
 
         , store_start_y: 100
