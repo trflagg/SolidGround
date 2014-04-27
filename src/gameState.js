@@ -1,9 +1,11 @@
 define(['constants'
         , 'gameFSM'
-        , 'dirtTile']
+        , 'dirtTile'
+        , 'scoreText']
         , function(constants
                    , GameFSM
-                   , DirtTile) {
+                   , DirtTile
+                   , ScoreText) {
 
     var GameState = function(game) {
 
@@ -19,6 +21,12 @@ define(['constants'
 
         this.rigs = this.add.group();
         this.dirt = [];
+
+        this.money_score = new ScoreText(this, constants.money_score_x, constants.score_y, '$', {
+            font: '25px PT Sans'
+            , fill: 'FF0'
+        });
+        this.add.existing(this.money_score);
 
         this.score = {
             'lightblue': 0
@@ -138,6 +146,7 @@ define(['constants'
         }
 
         console.log('lb:' + this.score['lightblue']);
+        this.money_score.score = this.score['lightblue'];
         console.log('mb:' + this.score['magenta']);
     };
 

@@ -22,7 +22,9 @@ define(['jquery'], function($) {
     constants['dirt_size_x'] = constants['game_size_x'];
     constants['dirt_size_y'] = 50;
 
-    constants['dirt_start'] = Math.floor(constants['game_size_y'] * (3/6));
+    constants['dirt_start'] = Math.floor(constants['game_size_y'] * (0.5));
+
+    constants['score_y'] = 0;
 
     return constants;
 })

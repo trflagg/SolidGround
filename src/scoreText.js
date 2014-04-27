@@ -1,7 +1,8 @@
 define([], function() {
     var ScoreText = function(game, x, y, name, style) {
         Phaser.Text.call(this, game, x, y, '', style);
-
+        console.log(y);
+        console.log(this.y);
         this.name = name;
         this.score = 0;
     }
@@ -14,7 +15,8 @@ define([], function() {
     };
 
     ScoreText.prototype.update = function() {
-        this.text = this.name + ":: " + this.score;
+        this.text = this.name + " " + this.score;
+        this.x = this.game.world.width - this._width;
     };
     return ScoreText;
 })
