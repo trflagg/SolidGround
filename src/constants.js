@@ -9,6 +9,16 @@ define(['jquery'], function($) {
         , bottom_pipe: 4
         , left_pipe: 8
 
+        , layer_1_min: 100
+        , layer_1_max: 150
+
+        , layer_2_min: 200
+        , layer_2_max: 300
+
+        , mineral_rand: 0.1
+        , layer_1_cutoff: 4
+        , layer_2_cutoff: 8
+
         , lightblue_50_score: 0.50
         , lightblue_25_score: 0.25
         , magenta_50_score: 0.50
@@ -26,7 +36,7 @@ define(['jquery'], function($) {
     constants['game_size_y'] = Math.floor($(window).height() / constants.tile_size);
 
     constants['dirt_size_x'] = constants['game_size_x'];
-    constants['dirt_size_y'] = 50;
+    constants['dirt_size_y'] = 30;
 
     constants['dirt_start'] = Math.floor(constants['game_size_y'] * (0.5));
 

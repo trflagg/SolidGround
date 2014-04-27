@@ -66,6 +66,9 @@ define(['constants'
         this.stage.backgroundColor = "#000";
         this.create_dirt();
 
+        this.setBombs(constants.layer_1_cutoff, constants.layer_1_min, constants.layer_1_max);
+        this.setBombs(constants.layer_2_cutoff, constants.layer_2_min, constants.layer_2_max);
+
         this.input.moveCallback = this.mouse_moved;
         this.input.onDown.add(this.onDown, this);
 
@@ -83,6 +86,19 @@ define(['constants'
                 this.dirt[i][j] = dirt_tile;
                 dirt_tile.makeMineral();
             }
+        }
+    };
+
+    GameState.prototype.setBombs = function(cutoff, min, max) {
+        var bomb_count = this.rnd.integerInRange(min, max);
+
+        for (var i=0, ll=bomb_count; i<ll; i++) {
+            var bomb_center_i = this.rnd.integerInRange(0, constants.dirt_size_x - 1)
+                , bomb_center_j = this.rnd.integerInRange(cutoff, constants.dirt_size_y - 1)
+                , bomb_type = this.rnd.pick(['lightblue', 'magenta'])
+
+            var neighbors = this.getNeighbors(bomb_center_i, bomb_center_j);
+            this.dirt[bomb_center_i][bomb_center_j].setBomb(bomb_type, neighbors);
         }
     };
 
@@ -196,12 +212,9 @@ define(['constants'
     GameState.prototype.analyzeDirt = function() {
         for (i=0,ll=constants.dirt_size_x; i<ll; i++) {
             for (j=0, ll2=constants.dirt_size_y; j<ll2; j++) {
-                var left = i > 0 ? this.dirt[i-1][j] : null
-                   , right = i < constants.dirt_size_x - 1 ? this.dirt[i+1][j] : null
-                   , top = j > 0 ? this.dirt[i][j-1] : null
-                   , bottom = j < constants.dirt_size_y - 1 ? this.dirt[i][j+1] : null;
+                var neighbors = this.getNeighbors(i, j);
 
-                var result = this.dirt[i][j].analyze({left: left, right: right, top: top, bottom: bottom});
+                var result = this.dirt[i][j].analyze(neighbors);
                 if (result) {
                     for (mineral_score in this.mineral_score) {
                         if (this.mineral_score.hasOwnProperty(mineral_score)) {
@@ -212,6 +225,20 @@ define(['constants'
             }
         }
 
+    };
+
+    GameState.prototype.getNeighbors = function(i, j) {
+        var left = i > 0 ? this.dirt[i-1][j] : null
+           , right = i < constants.dirt_size_x - 1 ? this.dirt[i+1][j] : null
+           , top = j > 0 ? this.dirt[i][j-1] : null
+           , bottom = j < constants.dirt_size_y - 1 ? this.dirt[i][j+1] : null;
+
+        return {
+            top: top
+            , left: left
+            , bottom: bottom
+            , right: right
+        };
     };
 
     return GameState;

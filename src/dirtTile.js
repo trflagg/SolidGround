@@ -23,25 +23,68 @@ define(['constants'], function(constants) {
     DirtTile.prototype.constructor = DirtTile;
 
     DirtTile.prototype.makeMineral = function() {
-        if (this.game.rnd.frac() < 0.1) {
+        if (this.game.rnd.frac() < constants.mineral_rand) {
+            this.setLightBlue(constants.lightblue_50_score);
+        }
+        else if (this.game.rnd.frac() < constants.mineral_rand) {
+            this.setLightBlue(constants.lightblue_25_score);
+        }
+        else if (this.game.rnd.frac() < constants.mineral_rand) {
+            this.setMagenta(constants.magenta_50_score);
+        }
+        else if (this.game.rnd.frac() < constants.mineral_rand) {
+            this.setMagenta(constants.magenta_25_score);
+        }
+    };
+
+    DirtTile.prototype.setLightBlue = function(amount) {
+        if (this.mineralSprite) {
+            this.mineralSprite.destroy();
+        }
+
+        if (amount === constants.lightblue_50_score) {
             this.mineral_score['lightblue'] = constants.lightblue_50_score;
             this.mineralSprite = this.game.add.sprite(this.x, this.y, 'mineralSheet', 0);
             this.mineralSprite.bringToTop();
         }
-        else if (this.game.rnd.frac() < 0.1) {
+        else if (amount === constants.lightblue_25_score) {
             this.mineral_score['lightblue'] = constants.lightblue_25_score;
             this.mineralSprite = this.game.add.sprite(this.x, this.y, 'mineralSheet', 1);
             this.mineralSprite.bringToTop();
         }
-        else if (this.game.rnd.frac() < 0.1) {
+    };
+
+    DirtTile.prototype.setMagenta = function(amount) {
+        if (this.mineralSprite) {
+            this.mineralSprite.destroy();
+        }
+
+        if (amount === constants.magenta_50_score) {
             this.mineral_score['magenta'] = constants.magenta_50_score;
             this.mineralSprite = this.game.add.sprite(this.x, this.y, 'mineralSheet', 2);
             this.mineralSprite.bringToTop();
         }
-        else if (this.game.rnd.frac() < 0.1) {
+        else if (amount === constants.magenta_25_score) {
             this.mineral_score['magenta'] = constants.magenta_25_score;
             this.mineralSprite = this.game.add.sprite(this.x, this.y, 'mineralSheet', 3);
             this.mineralSprite.bringToTop();
+        }
+    };
+
+    DirtTile.prototype.setBomb = function(bomb_type, neighbors) {
+        if (bomb_type === 'lightblue') {
+            this.setLightBlue(constants.lightblue_50_score);
+            neighbors.top ? neighbors.top.setLightBlue(constants.lightblue_25_score) : null;
+            neighbors.left ? neighbors.left.setLightBlue(constants.lightblue_25_score): null;
+            neighbors.bottom ? neighbors.bottom.setLightBlue(constants.lightblue_25_score) : null;
+            neighbors.right ? neighbors.right.setLightBlue(constants.lightblue_25_score) : null;
+        }
+        if (bomb_type === 'magenta') {
+            this.setMagenta(constants.magenta_50_score);
+            neighbors.top ? neighbors.top.setMagenta(constants.magenta_25_score) : null;
+            neighbors.left ? neighbors.left.setMagenta(constants.magenta_25_score): null;
+            neighbors.bottom ? neighbors.bottom.setMagenta(constants.magenta_25_score) : null;
+            neighbors.right ? neighbors.right.setMagenta(constants.magenta_25_score) : null;
         }
     };
 
