@@ -52,18 +52,17 @@ define(['constants'], function(constants) {
 
     DirtTile.prototype.clicked = function() {
         if (this.game.fsm.is('digging') && this.is_diggable) {
-            var pipe_cost = constants.cost_pipe_per_level2 * Math.pow(this.j + 1, 2);
-            console.log(pipe_cost);
+            var pipe_cost = this.getPipeCost();
             if (this.game.score['$'] > pipe_cost) {
+                this.pipe = true;
 
                 this.game.score['$'] -= pipe_cost;
 
                 if (this.mineralSprite) {
-                    this.mineralSprite.destroy();
+                    this.mineralSprite.kill();
                 }
-                this.frame = 2;
+                this.is_diggable = false;
 
-                this.pipe = true;
                 this.resetMineralScores();
 
                 this.game.boardChanged();
@@ -71,9 +70,15 @@ define(['constants'], function(constants) {
         }
     };
 
+    DirtTile.prototype.getPipeCost = function() {
+        return constants.cost_pipe_per_level2 * Math.pow(this.j + 1, 2);
+    };
+
     DirtTile.prototype.analyze = function(neighbors) {
 
         if (this.pipe) {
+            this.is_diggable = false;
+            console.log('pipe:' + this.x + "," + this.y);
             this.pipe_num = 0;
             this.resetMineralScores();
 
@@ -90,8 +95,11 @@ define(['constants'], function(constants) {
 
             return this.mineral_score;
         }
+        else {
 
-        return null;
+            return null;
+        }
+
 
     };
 
@@ -172,7 +180,7 @@ define(['constants'], function(constants) {
     DirtTile.prototype.diggable = function() {
         if (!this.pipe) {
             this.is_diggable = true;
-            this.frame = 1;
+            this.frame = 17;
         }
     };
 

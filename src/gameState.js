@@ -14,6 +14,7 @@ define(['constants'
     GameState.prototype.preload = function() {
         this.load.spritesheet('dirtSheet', 'img/dirtSheetBlack32.png', constants.tile_size, constants.tile_size);
         this.load.spritesheet('mineralSheet', 'img/mineralSheet32.png', constants.tile_size, constants.tile_size);
+        this.load.spritesheet('diggableSheet', 'img/diggableSheet.png', constants.tile_size, constants.tile_size);
         this.load.image('rig', 'img/rig32.png');
     };
 
@@ -111,6 +112,21 @@ define(['constants'
                 this.placing_rig.y = constants.exile_y;
             }
 
+        }
+        // update each tile
+        else {
+            for (var i=0, ll=constants.dirt_size_x; i<ll; i++) {
+                for(var j=0, ll2=constants.dirt_size_y; j<ll2; j++) {
+                    if (this.dirt[i][j].is_diggable) {
+                        if (this.score['$'] > this.dirt[i][j].getPipeCost()) {
+                            this.dirt[i][j].frame = 1;
+                        }
+                        else {
+                            this.dirt[i][j].frame = 17;
+                        }
+                    }
+                }
+            }
         }
 
         // scores
