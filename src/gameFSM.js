@@ -14,7 +14,7 @@ define(['constants'
     };
 
     gameFSM.prototype.onleaveplacing_rig = function(event, from, to) {
-        this.game.rigs.add(this.game.placing_rig);
+        this.game.rigs.push(this.game.placing_rig);
         this.game.dirt[this.game.placing_rig.i][0].rig();
         this.game.placing_rig = null;
         this.game.boardChanged();
@@ -27,6 +27,7 @@ define(['constants'
         , events: [
             { name: 'startup',      from: 'none',           to: 'placing_rig'}
           , { name: 'placeRig',     from: 'placing_rig',    to: 'digging'}        
+          , { name: 'buyARig',      from: 'digging',         to: 'placing_rig'}
         ]
     });
 

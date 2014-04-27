@@ -1,11 +1,13 @@
 define(['constants'
         , 'gameFSM'
         , 'dirtTile'
-        , 'scoreText']
+        , 'scoreText'
+        , 'storeText']
         , function(constants
                    , GameFSM
                    , DirtTile
-                   , ScoreText) {
+                   , ScoreText
+                   , StoreText) {
 
     var GameState = function(game) {
 
@@ -15,22 +17,33 @@ define(['constants'
         this.load.spritesheet('dirtSheet', 'img/dirtSheetBlack32.png', constants.tile_size, constants.tile_size);
         this.load.spritesheet('mineralSheet', 'img/mineralSheet32.png', constants.tile_size, constants.tile_size);
         this.load.spritesheet('diggableSheet', 'img/diggableSheet.png', constants.tile_size, constants.tile_size);
-        this.load.image('rig', 'img/rig32.png');
+        this.load.spritesheet('rig', 'img/rig32-2.png', constants.tile_size, constants.tile_size);
     };
 
     GameState.prototype.create = function() {
 
-        this.rigs = this.add.group();
+        this.rigs = [];
         this.dirt = [];
+        this.refineries = 0;
 
         this.score = {
             '$': 0
-            , '$/sec': this.rnd.integerInRange(83, 113)
+            , '$/sec': 100
             , 'lb': 0
             , 'ma': 0
         };
         this.base_rate = this.score['$/sec'];
         this.last_update = this.game.time.now;
+
+        this.rig_store = new StoreText(this, 0, constants.store_start_y, 'rig', constants.cost_rig, '$' );
+        this.add.existing(this.rig_store);
+        var text = "buy another rig for $"+constants.cost_rig;
+        this.rig_store.text = text;
+
+        this.refinery_store = new StoreText(this, 0, constants.store_start_y + constants.score_height, 'refinery', constants.cost_refinery, '$' );
+        this.add.existing(this.refinery_store);
+        var text = "upgrade to a refinery for $"+constants.cost_refinery;
+        this.refinery_store.text = text;
 
         this.money_score = new ScoreText(this, 0, constants.score_y, '$', {
             font: '25px PT Sans'
@@ -161,10 +174,10 @@ define(['constants'
     };
 
     GameState.prototype.updateScores = function() {
-        this.money_score.score = this.score['$'];
+        this.money_score.score = Math.floor(this.score['$']);
         this.money_per_second_score.score = Math.floor(this.score['$/sec']);
         this.lb_score.score = Math.floor(this.score['lb'] * constants.rate_$_per_second_lb);
-        this.ma_score.score = Math.floor(this.score['ma'] * constants.rate_$_per_second_ma);
+        this.ma_score.score = Math.floor(this.score['ma'] * constants.rate_$_per_second_ma * (this.refineries + 1));
     };
 
     GameState.prototype.onDown = function() {
@@ -186,6 +199,15 @@ define(['constants'
                 this.placing_rig.x = x * tile_size + (0.5 * tile_size);
                 this.placing_rig.y = (constants.dirt_start * tile_size) - (0.5 * tile_size);
 
+                // check if another rig is there
+                for(var i=0, ll=this.rigs.length; i<ll; i++) {
+                    if (this.rigs[i].x === this.placing_rig.x &&
+                        this.rigs[i].y === this.placing_rig.y) 
+                    {
+                        return;
+                    }
+                }
+
                 this.fsm.placeRig();
             }
         }
@@ -205,7 +227,7 @@ define(['constants'
 
         this.score['$/sec'] = this.base_rate + 
                                 this.mineral_score['lightblue'] * constants.rate_$_per_second_lb +
-                                this.mineral_score['magenta'] * constants.rate_$_per_second_ma;
+                                this.mineral_score['magenta'] * constants.rate_$_per_second_ma * (this.refineries + 1);
 
     };
 
@@ -247,6 +269,28 @@ define(['constants'
             , bottom: bottom
             , right: right
         };
+    };
+
+    GameState.prototype.buy = function(store, name) {
+        this.score[store.currency] -= store.price;
+
+        if (name === 'rig') {
+            this.fsm.buyARig();
+        }
+
+        if (name === 'refinery') {
+            var suitable_rigs = [];
+            for (var i=0, ll=this.rigs.length; i<ll; i++) {
+                if (!this.rigs[i].refinery) {
+                    suitable_rigs.push(this.rigs[i]);
+                }
+            }
+            if (suitable_rigs.length > 0) {
+                this.refineries++;
+                var upgrade_rig = this.rnd.pick(suitable_rigs);
+                upgrade_rig.upgrade();
+            }
+        }
     };
 
     return GameState;
