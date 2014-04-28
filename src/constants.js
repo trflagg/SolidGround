@@ -4,7 +4,7 @@ define(['jquery'], function($) {
         , exile_x: -100
         , exile_y: -100
 
-        , win_score: 200000
+        , win_score: 150000
         // , win_score: 500
 
         , top_pipe: 1
