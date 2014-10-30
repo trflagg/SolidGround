@@ -28,7 +28,7 @@
         p {
             display: inline;
         }
-        
+
         h3 {
             margin-bottom: 0;
             padding-top: 15px;
@@ -41,6 +41,15 @@
             text-decoration: none;
             display: block;
             margin: 10px;
+        }
+
+        .warning {
+            color: yellow;
+        }
+
+        .warning-box {
+            outline: 1px solid yellow;
+            padding: 5px;
         }
         </style>
     </head>
@@ -68,7 +77,10 @@
         <h3>Cyan</h3>
             <img src="img/cyan.png"/>
             <p>Makes more money per second when connected to a pipe.</p>
-
+            <h3 class="warning">WARNING</h3>
+        <div class="warning-box">
+            <p>The scoreboard is not being displayed due to a bug that I don't have time to track down. The game is playable but isn't as enjoyable without seeing the current scores. Sorry about that :(</p>
+        </div>
         <a href="game.html">Play!!</a>
     </body>
 </html>
